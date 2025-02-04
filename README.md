@@ -1,2 +1,2 @@
-# codex
-codex firmware
+# Codex
+Codex Firmware

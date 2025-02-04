@@ -1,0 +1,96 @@
+//-------------------------------------------------------------------------------
+// musig.dts
+//
+// Device tree overlay for codex audio codecs
+//
+// compile: $ dtc -@ -H epapr -O dtb -o musig.dtbo -Wno-unit_address_vs_reg musig.dts
+// install: sudo cp musig.dtbo /boot/overlays
+// overlay: dtoverlay=musig.dtbo ( append to /boot/firmware/config.txt )
+// $ sudo alsactl --no-ucm -L init
+// $ sudo alsactl --no-ucm -L -d restore
+// # sudo alsactl info ###
+//
+// Cooper Baker (c) 2024
+// http://nyquist.dev/codex
+//-------------------------------------------------------------------------------
+
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2708";
+
+	fragment@0 {
+		target = <&sound>;
+		__overlay__ {
+			compatible = "simple-audio-card";
+			i2s-controller = <&i2s_clk_producer>;
+			simple-audio-card,name = "Audio";
+			status="okay";
+
+			playback_link: simple-audio-card,dai-link@0 {
+				format = "i2s";
+
+				cpu {
+					sound-dai = <&i2s_clk_producer>;
+					dai-tdm-slot-num = <2>;
+					dai-tdm-slot-width = <32>;
+				};
+
+				codec {
+					sound-dai = <&dac>;
+				};
+			};
+
+			capture_link: simple-audio-card,dai-link@1 {
+				format = "i2s";
+
+				cpu {
+					sound-dai = <&i2s_clk_producer>;
+					dai-tdm-slot-num = <2>;
+					dai-tdm-slot-width = <32>;
+				};
+
+				codec {
+					sound-dai = <&adc>;
+				};
+			};
+		};
+	};
+
+	fragment@1 {
+		target-path = "/";
+		__overlay__ {
+
+			dac: spdif_rx {
+				#address-cells = <0>;
+				#size-cells = <0>;
+				#sound-dai-cells = <0>;
+				compatible = "linux,spdif-dit";
+				status = "okay";
+			};
+
+			adc: spdif_tx {
+				#address-cells = <0>;
+				#size-cells = <0>;
+				#sound-dai-cells = <0>;
+				compatible = "linux,spdif-dir";
+				status = "okay";
+			};
+
+		};
+	};
+
+	fragment@2 {
+		target = <&i2s_clk_producer>;
+		__overlay__ {
+			#sound-dai-cells = <0>;
+			status = "okay";
+		};
+	};
+};
+
+//-------------------------------------------------------------------------------
+// eof
+//-------------------------------------------------------------------------------

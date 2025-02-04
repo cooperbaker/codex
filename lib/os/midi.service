@@ -1,0 +1,39 @@
+#-------------------------------------------------------------------------------
+# midi.service
+#
+# Codex MIDI Systemd Service Configuration File
+#
+# Start midi at boot as a persistent systemd service:
+# $ sudo ln -s /home/pi/codex/lib/os/midi.service /etc/systemd/system/midi.service
+# $ sudo systemctl enable midi.service
+#
+# Commands:
+# $ sudo systemctl status midi    # display status
+# $ sudo systemctl start midi     # start now
+# $ sudo systemctl restart midi   # restart now
+# $ sudo systemctl stop midi      # stop now
+#
+# Cooper Baker (c) 2025
+# http://nyquist.dev/codex
+#-------------------------------------------------------------------------------
+
+
+[Unit]
+Description=Codex MIDI
+#After=network.target
+
+[Service]
+User=root
+Type=simple
+Restart=always
+KillMode=process
+WorkingDirectory=/home/pi/codex/lib/os
+ExecStart=/home/pi/codex/lib/os/midi
+
+[Install]
+WantedBy=multi-user.target
+
+
+#-------------------------------------------------------------------------------
+# eof
+#-------------------------------------------------------------------------------
