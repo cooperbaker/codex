@@ -145,9 +145,9 @@ sudo grep -qxF 'dtoverlay=codex' /boot/firmware/config.txt || echo 'dtoverlay=co
 sudo grep -qxF 'dtoverlay=uart4-pi5' /boot/firmware/config.txt || echo 'dtoverlay=uart4-pi5' | sudo tee -a /boot/firmware/config.txt
 sudo grep -qxF 'dtoverlay=midi-uart4-pi5' /boot/firmware/config.txt || echo 'dtoverlay=midi-uart4-pi5' | sudo tee -a /boot/firmware/config.txt
 # apply overlays now
-sudo dtoverlay -v audio
+sudo dtoverlay -v codex
 sudo dtoverlay -v uart4-pi5
-sudo dtoverlay -v midi-uart4-pi-5
+sudo dtoverlay -v midi-uart4-pi5
 echo ""
 
 
