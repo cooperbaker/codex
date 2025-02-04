@@ -78,9 +78,9 @@ chmod -Rv 755 ./codex/lib/os
 
 # compile and install device tree overlay for audio
 cd /home/pi/codex/lib/os
-dtc -@ -H epapr -O dtb -o audio.dtbo -Wno-unit_address_vs_reg audio.dts
-sudo cp -v audio.dtbo /boot/overlays/
-rm -v audio.dtbo
+dtc -@ -H epapr -O dtb -o codex.dtbo -Wno-unit_address_vs_reg codex.dts
+sudo cp -v codex.dtbo /boot/overlays/
+rm -v codex.dtbo
 
 # compile midi driver
 gcc midi.c -v -o midi -lasound -lpthread
@@ -141,7 +141,7 @@ sudo sed -i '/dtparam=audio=on/c\#dtparam=audio=on' /boot/firmware/config.txt
 echo "dtoverlay=vc4-kms-v3d,noaudio → /boot/firmware/config.txt"
 sudo sed -i '/dtoverlay=vc4-kms-v3d/c\dtoverlay=vc4-kms-v3d,noaudio' /boot/firmware/config.txt
 # add 'dtoverlay...' if 'dtoverlay...' does not exist
-sudo grep -qxF 'dtoverlay=audio' /boot/firmware/config.txt || echo 'dtoverlay=audio' | sudo tee -a /boot/firmware/config.txt
+sudo grep -qxF 'dtoverlay=codex' /boot/firmware/config.txt || echo 'dtoverlay=codex' | sudo tee -a /boot/firmware/config.txt
 sudo grep -qxF 'dtoverlay=uart4-pi5' /boot/firmware/config.txt || echo 'dtoverlay=uart4-pi5' | sudo tee -a /boot/firmware/config.txt
 sudo grep -qxF 'dtoverlay=midi-uart4-pi5' /boot/firmware/config.txt || echo 'dtoverlay=midi-uart4-pi5' | sudo tee -a /boot/firmware/config.txt
 # apply overlays now
