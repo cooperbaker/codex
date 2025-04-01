@@ -86,6 +86,9 @@ rm -v codex.dtbo
 gcc midi.c -v -o midi -lasound -lpthread
 echo ""
 
+# install /etc/asound.conf
+sudo cp -v asound.conf /etc/asound.conf
+
 
 #-------------------------------------------------------------------------------
 # install codex-pd patches
@@ -102,9 +105,6 @@ echo ""
 #-------------------------------------------------------------------------------
 # enable i2c and spi
 #-------------------------------------------------------------------------------
-#
-#  WHAT ABOUT I2S ???
-#
 echo -e "\033[1mEnabling I2C and SPI..."
 echo -e "\033[0m\033[1A"
 echo ""
@@ -135,15 +135,19 @@ echo -e "\033[1mEditing /boot/firmware/config.txt..."
 echo -e "\033[0m\033[1A"
 echo ""
 sudo rsync -auv /boot/firmware/config.txt /boot/firmware/config.txt.original
+
 # edit existing 'dtoverlay...' declarations
 echo "#dtparam=audio=on → /boot/firmware/config.txt"
 sudo sed -i '/dtparam=audio=on/c\#dtparam=audio=on' /boot/firmware/config.txt
 echo "dtoverlay=vc4-kms-v3d,noaudio → /boot/firmware/config.txt"
 sudo sed -i '/dtoverlay=vc4-kms-v3d/c\dtoverlay=vc4-kms-v3d,noaudio' /boot/firmware/config.txt
-# add 'dtoverlay...' if 'dtoverlay...' does not exist
-sudo grep -qxF 'dtoverlay=codex' /boot/firmware/config.txt || echo 'dtoverlay=codex' | sudo tee -a /boot/firmware/config.txt
+
+# add new 'dtparam/dtoverlay...' if they do not exist
+sudo grep -qxF 'dtparam=uart1=on' /boot/firmware/config.txt || echo 'dtparam=uart1=on' | sudo tee -a /boot/firmware/config.txt
 sudo grep -qxF 'dtoverlay=uart4-pi5' /boot/firmware/config.txt || echo 'dtoverlay=uart4-pi5' | sudo tee -a /boot/firmware/config.txt
 sudo grep -qxF 'dtoverlay=midi-uart4-pi5' /boot/firmware/config.txt || echo 'dtoverlay=midi-uart4-pi5' | sudo tee -a /boot/firmware/config.txt
+sudo grep -qxF 'dtoverlay=codex' /boot/firmware/config.txt || echo 'dtoverlay=codex' | sudo tee -a /boot/firmware/config.txt
+
 # apply overlays now
 sudo dtoverlay -v codex
 sudo dtoverlay -v uart4-pi5
@@ -160,7 +164,7 @@ echo ""
 sudo rsync -auv /etc/samba/smb.conf /etc/samba/smb.conf.original
 sudo rm -v /etc/samba/smb.conf
 sudo cp -v /etc/samba/smb.conf.original /etc/samba/smb.conf
-sudo cat /home/pi/codex/lib/os/smb.conf | sudo tee -a /etc/samba/smb.conf
+sudo cat /home/pi/codex/lib/os/smb.conf | sudo tee -a /etc/samba/smb.conf > /dev/null
 echo "raspberry\nraspberry\n" | sudo smbpasswd -a -s pi
 sudo systemctl restart smbd
 sudo systemctl status smbd
@@ -188,7 +192,7 @@ echo ""
 echo -e "\033[1mCodex Install Complete"
 echo -e "\033[0m\033[1A"
 echo ""
-read -rsp $'Press any key to reboot...\n' -n1 key
+read -n 1 -s -r -p "Press any key to reboot..."
 sudo reboot now
 echo ""
 

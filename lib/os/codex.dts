@@ -1,11 +1,11 @@
 //-------------------------------------------------------------------------------
-// musig.dts
+// codex.dts
 //
 // Device tree overlay for codex audio codecs
 //
 // compile: $ dtc -@ -H epapr -O dtb -o musig.dtbo -Wno-unit_address_vs_reg musig.dts
-// install: sudo cp musig.dtbo /boot/overlays
-// overlay: dtoverlay=musig.dtbo ( append to /boot/firmware/config.txt )
+// install: sudo cp codex.dtbo /boot/overlays
+// overlay: dtoverlay=codex.dtbo ( append to /boot/firmware/config.txt )
 // $ sudo alsactl --no-ucm -L init
 // $ sudo alsactl --no-ucm -L -d restore
 // # sudo alsactl info ###
